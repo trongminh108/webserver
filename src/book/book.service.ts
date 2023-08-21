@@ -9,8 +9,8 @@ import { Model } from 'mongoose';
 export class BookService {
   constructor(@InjectModel(Book.name) private bookModel: Model<Book>) {}
 
-  create(createBookInput: CreateBookInput) {
-    return 'This action adds a new book';
+  async create(createBookInput: CreateBookInput) {
+    return await new this.bookModel(createBookInput).save();
   }
 
   async findAll(condition = null) {
@@ -26,7 +26,7 @@ export class BookService {
     return `This action updates a #${id} book`;
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} book`;
+  async remove(id: string) {
+    return await this.bookModel.findByIdAndDelete(id);
   }
 }

@@ -9,7 +9,9 @@ type Book {
 
 input CreateBookInput {
   # Example field (placeholder)
-  exampleField: Int
+  name: String
+  genre: String
+  authorId: ID
 }
 
 input UpdateBookInput {

@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
-import { CreateAuthorInput } from './dto/create-author.input';
-import { UpdateAuthorInput } from './dto/update-author.input';
 import { Author } from './schema/author.schema';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
+import { PubSub } from 'graphql-subscriptions';
 
 @Injectable()
 export class AuthorService {
+  pubSub: PubSub = new PubSub();
   constructor(@InjectModel(Author.name) private AuthorModel: Model<Author>) {}
-  create(createAuthorInput: CreateAuthorInput) {
-    return 'This action adds a new author';
+
+  async create(author: Author) {
+    return await new this.AuthorModel(author).save();
   }
 
   async findAll() {
@@ -20,11 +21,12 @@ export class AuthorService {
     return await this.AuthorModel.findById(id);
   }
 
-  update(id: number, updateAuthorInput: UpdateAuthorInput) {
-    return `This action updates a #${id} author`;
+  async update(id: string, newAuthor: Author) {
+    await this.AuthorModel.findByIdAndUpdate(id, newAuthor);
+    return await this.AuthorModel.findById(id);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} author`;
+  async remove(id: string) {
+    return await this.AuthorModel.findByIdAndDelete(id);
   }
 }

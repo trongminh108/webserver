@@ -9,15 +9,19 @@
 /* eslint-disable */
 
 export class CreateAuthorInput {
-    exampleField?: Nullable<number>;
+    name: string;
+    age: number;
 }
 
 export class UpdateAuthorInput {
-    id: number;
+    name?: Nullable<string>;
+    age?: Nullable<number>;
 }
 
 export class CreateBookInput {
-    exampleField?: Nullable<number>;
+    name?: Nullable<string>;
+    genre?: Nullable<string>;
+    authorId?: Nullable<string>;
 }
 
 export class UpdateBookInput {
@@ -49,15 +53,21 @@ export abstract class IMutation {
 
     abstract createAuthor(createAuthorInput: CreateAuthorInput): Author | Promise<Author>;
 
-    abstract updateAuthor(updateAuthorInput: UpdateAuthorInput): Author | Promise<Author>;
+    abstract updateAuthor(id: string, updateAuthorInput: UpdateAuthorInput): Author | Promise<Author>;
 
-    abstract removeAuthor(id: number): Nullable<Author> | Promise<Nullable<Author>>;
+    abstract removeAuthor(id: string): Nullable<Author> | Promise<Nullable<Author>>;
 
     abstract createBook(createBookInput: CreateBookInput): Book | Promise<Book>;
 
     abstract updateBook(updateBookInput: UpdateBookInput): Book | Promise<Book>;
 
     abstract removeBook(id: string): Nullable<Book> | Promise<Nullable<Book>>;
+}
+
+export abstract class ISubscription {
+    __typename?: 'ISubscription';
+
+    abstract pushInfoAuthors(): Nullable<string> | Promise<Nullable<string>>;
 }
 
 export class Book {

@@ -45,7 +45,7 @@ export class BookResolver {
   }
 
   @Mutation('removeBook')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.bookService.remove(id);
   }
 }

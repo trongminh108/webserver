@@ -8,11 +8,13 @@ type Author {
 
 input CreateAuthorInput {
   # Example field (placeholder)
-  exampleField: Int
+  name: String!
+  age: Int!
 }
 
 input UpdateAuthorInput {
-  id: Int!
+  name: String
+  age: Int
 }
 
 type Query {
@@ -22,6 +24,10 @@ type Query {
 
 type Mutation {
   createAuthor(createAuthorInput: CreateAuthorInput!): Author!
-  updateAuthor(updateAuthorInput: UpdateAuthorInput!): Author!
-  removeAuthor(id: Int!): Author
+  updateAuthor(id: ID!, updateAuthorInput: UpdateAuthorInput!): Author!
+  removeAuthor(id: ID!): Author
+}
+
+type Subscription {
+  pushInfoAuthors: String
 }

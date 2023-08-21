@@ -5,26 +5,24 @@ import {
   Args,
   ResolveField,
   Parent,
+  Subscription,
 } from '@nestjs/graphql';
 import { AuthorService } from './author.service';
-import { CreateAuthorInput } from './dto/create-author.input';
-import { UpdateAuthorInput } from './dto/update-author.input';
 import { BookService } from 'src/book/book.service';
+import { PubSub } from 'graphql-subscriptions';
+import { Author } from './schema/author.schema';
 
 @Resolver('Author')
 export class AuthorResolver {
+  pubSub: PubSub = new PubSub();
+  PUSH_INFO_AUTHOR = 'postInfoAuthor';
   constructor(
     private readonly authorService: AuthorService,
     private bookService: BookService,
   ) {}
 
-  @Mutation('createAuthor')
-  create(@Args('createAuthorInput') createAuthorInput: CreateAuthorInput) {
-    return this.authorService.create(createAuthorInput);
-  }
-
   @Query('authors')
-  findAll() {
+  async findAll() {
     return this.authorService.findAll();
   }
 
@@ -39,13 +37,26 @@ export class AuthorResolver {
     return this.bookService.findAll({ authorId: id });
   }
 
+  @Mutation('createAuthor')
+  async create(@Args('createAuthorInput') author: Author) {
+    await this.pubSub.publish(this.PUSH_INFO_AUTHOR, {
+      pushInfoAuthors: 'A new Author created',
+    });
+    return await this.authorService.create(author);
+  }
+
   @Mutation('updateAuthor')
-  update(@Args('updateAuthorInput') updateAuthorInput: UpdateAuthorInput) {
-    return this.authorService.update(updateAuthorInput.id, updateAuthorInput);
+  update(@Args('id') id: string, @Args('updateAuthorInput') newAuthor: Author) {
+    return this.authorService.update(id, newAuthor);
   }
 
   @Mutation('removeAuthor')
-  remove(@Args('id') id: number) {
+  remove(@Args('id') id: string) {
     return this.authorService.remove(id);
+  }
+
+  @Subscription()
+  pushInfoAuthors() {
+    return this.pubSub.asyncIterator(this.PUSH_INFO_AUTHOR);
   }
 }

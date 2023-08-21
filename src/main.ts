@@ -3,6 +3,10 @@ import { AppModule } from './app.module';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  // app.useStaticAssets(join(__dirname, '..', process.env.FILE_PATH || 'files'), {
+  //   index: false,
+  //   prefix: '/webinfo_files',
+  // });
   app.enableCors();
   await app.listen(4000);
 }
