@@ -28,6 +28,6 @@ export class FilesUploadController {
   )
   uploadFile(@UploadedFile() file: Express.Multer.File): string {
     console.log(file);
-    return 'uploaded file';
+    return file.filename;
   }
 }
